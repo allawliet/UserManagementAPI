@@ -1,0 +1,91 @@
+@host = http://localhost:5080
+@token = dev-only-token-change-me
+
+### List users (page 1, 20 per page)
+GET {{host}}/api/users
+Authorization: Bearer {{token}}
+
+### List users, custom paging
+GET {{host}}/api/users?page=1&pageSize=5
+Authorization: Bearer {{token}}
+
+### Invalid paging (400)
+GET {{host}}/api/users?pageSize=1000
+Authorization: Bearer {{token}}
+
+### Get user by ID
+GET {{host}}/api/users/1
+Authorization: Bearer {{token}}
+
+### Get missing user (404)
+GET {{host}}/api/users/999
+Authorization: Bearer {{token}}
+
+### Create user
+POST {{host}}/api/users
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "Alan",
+  "lastName": "Turing",
+  "email": "alan@techhive.example",
+  "department": "IT"
+}
+
+### Create invalid user (400)
+POST {{host}}/api/users
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "",
+  "email": "not-an-email"
+}
+
+### Update user
+PUT {{host}}/api/users/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "Ada",
+  "lastName": "King",
+  "email": "ada@techhive.example",
+  "department": "Engineering"
+}
+
+### Delete user
+DELETE {{host}}/api/users/2
+Authorization: Bearer {{token}}
+
+### Email without a domain suffix (400)
+POST {{host}}/api/users
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "firstName": "A", "lastName": "B", "email": "a@b", "department": "IT" }
+
+### Malformed JSON (400)
+POST {{host}}/api/users
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{bad
+
+### Duplicate email, different case (409)
+POST {{host}}/api/users
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "firstName": "X", "lastName": "Y", "email": "ADA@techhive.example", "department": "IT" }
+
+### No token (401)
+GET {{host}}/api/users
+
+### Wrong token (401)
+GET {{host}}/api/users
+Authorization: Bearer not-a-real-token
+
+### Public status page (no token needed)
+GET {{host}}/
